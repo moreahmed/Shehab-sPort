@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+@import 'tailwindcss';
+
+/*
+ * ============================================================================
+ * PORTFOLIO DESIGN SYSTEM — Tailwind v4 Theme
+ * ============================================================================
+ * Extracted from the hero design reference. All tokens are defined here
+ * as CSS custom properties and registered with @theme so they're available
+ * as first-class Tailwind utilities (e.g. `bg-primary`, `font-display`).
+ * ============================================================================
+ */
+
+/* --------------------------------------------------------------------------
+   1. THEME TOKENS
+   -------------------------------------------------------------------------- */
+@theme {
+	/* ---- Colors ---- */
+	--color-primary: #00b4d8;
+	--color-primary-light: #caf0f8;
+	--color-primary-dark: #03045e;
+
+	--color-bg: #fbfaf7;
+	--color-soft: #ffffff;
+
+	--color-main: #0a0a0a;
+	--color-muted: #555555;
+	--color-border: #e5e2df;
+	--color-dark: #17151c;
+
+	/* ---- Font Families ---- */
+	--font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+	--font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+
+	/* ---- Font Sizes (with line-height) ---- */
+	--text-display: 4.5rem;
+	--text-display--line-height: 1.05;
+	--text-display--letter-spacing: -0.02em;
+
+	--text-section: 3rem;
+	--text-section--line-height: 1.1;
+	--text-section--letter-spacing: -0.02em;
+
+	--text-subheading: 1.5rem;
+	--text-subheading--line-height: 1.3;
+	--text-subheading--letter-spacing: -0.01em;
+
+	--text-body-lg: 1.125rem;
+	--text-body-lg--line-height: 1.6;
+
+	--text-body: 1rem;
+	--text-body--line-height: 1.6;
+
+	--text-body-sm: 0.875rem;
+	--text-body-sm--line-height: 1.5;
+
+	--text-caption: 0.75rem;
+	--text-caption--line-height: 1.4;
+	--text-caption--letter-spacing: 0.02em;
+
+	--text-nav: 1rem;
+	--text-nav--line-height: 1;
+
+	/* ---- Animations ---- */
+	--animate-ticker: ticker 30s linear infinite;
+	--animate-blob: blob-drift 8s ease-in-out infinite;
+	--animate-fade-in: fade-in 0.6s ease-out forwards;
+	--animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+}
+
+/* --------------------------------------------------------------------------
+   2. KEYFRAME ANIMATIONS
+   -------------------------------------------------------------------------- */
+
+/* Infinite horizontal logo ticker */
+@keyframes ticker {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+/* Subtle organic blob drift animation */
+@keyframes blob-drift {
+	0%,
+	100% {
+		border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+		transform: translate(0, 0) rotate(0deg);
+	}
+	33% {
+		border-radius: 55% 45% 40% 60% / 45% 55% 45% 55%;
+		transform: translate(10px, -10px) rotate(2deg);
+	}
+	66% {
+		border-radius: 45% 55% 60% 40% / 60% 45% 55% 45%;
+		transform: translate(-5px, 5px) rotate(-1deg);
+	}
+}
+
+/* Fade in (opacity only) */
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Fade in + slide up */
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(2rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE STYLES
+   -------------------------------------------------------------------------- */
+@layer base {
+	html {
+		font-family: var(--font-body);
+		color: var(--color-main);
+		background-color: var(--color-bg);
+		scroll-behavior: smooth;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	/* Selection highlight uses the blue-purple accent */
+	::selection {
+		background-color: var(--color-primary);
+		color: var(--color-main);
+	}
+
+	/* Responsive type scale: scale down display sizes on mobile */
+	@media (max-width: 767px) {
+		:root {
+			--text-display: 2.5rem;
+			--text-section: 1.75rem;
+			--text-subheading: 1.25rem;
+		}
+	}
+
+	@media (min-width: 768px) and (max-width: 1023px) {
+		:root {
+			--text-display: 3.5rem;
+			--text-section: 2.25rem;
+		}
+	}
+}
+
+/* --------------------------------------------------------------------------
+   4. UTILITY CLASSES
+   -------------------------------------------------------------------------- */
+@layer utilities {
+	/* Gradient blob background element */
+	.gradient-blob {
+		background: radial-gradient(
+			ellipse at center,
+			var(--color-primary-light) 0%,
+			var(--color-primary) 58%,
+			var(--color-primary-dark) 100%
+		);
+		border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+	}
+
+	/* Grayscale photo treatment */
+	.photo-bw {
+		filter: grayscale(100%);
+	}
+
+	/* Staggered fade-in children (use on parent) */
+	.stagger-children > * {
+		opacity: 0;
+		animation: fade-in-up 0.6s ease-out forwards;
+	}
+
+	.stagger-children > *:nth-child(1) {
+		animation-delay: 0ms;
+	}
+	.stagger-children > *:nth-child(2) {
+		animation-delay: 100ms;
+	}
+	.stagger-children > *:nth-child(3) {
+		animation-delay: 200ms;
+	}
+	.stagger-children > *:nth-child(4) {
+		animation-delay: 300ms;
+	}
+	.stagger-children > *:nth-child(5) {
+		animation-delay: 400ms;
+	}
+	.stagger-children > *:nth-child(6) {
+		animation-delay: 500ms;
+	}
+}
