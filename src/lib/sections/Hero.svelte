@@ -7,7 +7,7 @@
 
 <!-- Removed bottom padding/margins and set up flex-col to control remaining space -->
 <section id="about" class="relative z-10 flex h-screen flex-col overflow-hidden px-6 pt-24 md:px-12 lg:px-16">
-    <ShootingStars class="position: absolute; inset: 0; z-index: -1;" count={7} />
+    <ShootingStars class="position: absolute; inset: 0; z-index: -1;" count={12} />
     <Aurora style="position: absolute; inset: 0; z-index: -1;" colorStops={[
         "#00b4d8",
         "#03045e"
