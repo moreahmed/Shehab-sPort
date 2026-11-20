@@ -29,10 +29,15 @@
   $effect(() => {
     const generateStars = () => {
       const newStars: Star[] = [];
+      const leftCount = count - Math.ceil(count / 3);
+      let leftIndex = 0;
       for (let i = 0; i < count; i++) {
+        const fromLeft = i % 3 !== 0;
         newStars.push({
           id: i,
-          x: 75 + Math.random() * 35, // Start near or just beyond the right edge
+          x: fromLeft
+            ? 8 + ((leftIndex++ + Math.random()) / leftCount) * 50
+            : 75 + Math.random() * 35, // Start near or just beyond the right edge
           y: -10 - Math.random() * 20, // Start slightly above the viewport
           angle: 100 + Math.random() * 15, // Fall downwards with a slight left tilt (100-115 degrees)
           delay: Math.random() * 8, // Random start delay up to 8s
