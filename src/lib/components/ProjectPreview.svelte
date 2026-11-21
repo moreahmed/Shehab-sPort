@@ -5,6 +5,7 @@
 	import ModelViewer from "./ModelViewer.svelte";
 
 	let { project, onclose }: { project: Project; onclose: () => void } = $props();
+	const closeIcon = { width: 24, height: 24, body: '<path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/>' };
 	let prioritizedAssets = $derived(
 		[...project.assets].sort((left, right) => (right.priority ?? 0) - (left.priority ?? 0))
 	);
@@ -33,14 +34,14 @@
 <div class="preview-backdrop" role="presentation" onclick={handleBackdropClick}>
 	<div class="preview-panel" role="dialog" tabindex="-1" aria-modal="true" aria-label={`${project.title} project preview`}>
 		<button type="button" class="close-button cursor-pointer" aria-label="Close project preview" onclick={onclose}>
-			<Icon icon="mdi:close" />
+			<Icon icon={closeIcon} />
 		</button>
 
 		<div class="project-layout">
-			<div class="main-view h-[85vh] w-fit">
+			<div class={["main-view w-full md:h-[85vh] md:w-fit", primaryAsset?.type === "3d" ? "h-[62svh]" : "h-auto"]}>
 				<h2>{project.title}</h2>
 				{#if primaryAsset?.type === "video"}
-					<video src={primaryAsset.url} controls poster={project.preview}>
+					<video src={primaryAsset.url} controls poster={project.thumb ?? project.preview}>
 						<track kind="captions" />
 					</video>
 				{:else if primaryAsset?.type === "3d"}
@@ -55,7 +56,7 @@
 					{#each prioritizedAssets.slice(1) as asset, index (asset.url + index)}
 						<div class="detail-view">
 							{#if asset.type === "video"}
-								<video src={asset.url} controls poster={project.preview}>
+								<video src={asset.url} controls poster={project.thumb ?? project.preview}>
 									<track kind="captions" />
 								</video>
 							{:else if asset.type === "3d"}
@@ -85,12 +86,12 @@
 	.preview-panel {
 		position: relative;
 		width: 100%;
-		min-height: 100vh;
+		min-height: 100svh;
 	}
 
 	.project-layout {
 		display: grid;
-		min-height: 100vh;
+		min-height: 100svh;
 		grid-template-columns: minmax(0, 3fr) minmax(14rem, 1fr);
 		gap: clamp(0.75rem, 1.5vw, 1.5rem);
 		padding: clamp(4rem, 8vh, 7rem) clamp(1rem, 5vw, 5rem) clamp(1rem, 4vw, 3rem);
@@ -167,15 +168,18 @@
 	@media (max-width: 767px) {
 		.preview-backdrop {
 			padding: 0;
+			backdrop-filter: none;
+			background: rgba(214, 214, 214, 0.96);
 		}
 
 		.preview-panel {
-			min-height: 100vh;
+			min-height: 100svh;
 		}
 
 		.project-layout {
 			grid-template-columns: 1fr;
-			grid-template-rows: minmax(55vh, auto) auto;
+			grid-template-rows: auto auto;
+			align-content: start;
 			padding: 4.5rem 1rem 1rem;
 		}
 
@@ -187,6 +191,24 @@
 		.detail-views {
 			grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
 			grid-auto-rows: 8rem;
+		}
+
+		.main-view {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.main-view img,
+		.main-view video {
+			flex: none;
+			height: auto;
+			max-height: 62svh;
+		}
+
+		.main-view :global(.model-viewer) {
+			flex: 1 1 0;
+			min-height: 0;
+			height: auto;
 		}
 	}
 </style>
