@@ -3,6 +3,7 @@
 
 	const email = "shehabehabb701@gmail.com";
 	const freelanceUrl = "https://www.freelancer.com/u/shehab1ehab";
+	const arrowIcon = { width: 24, height: 24, body: '<path fill="currentColor" d="M14 16.94v-4H5.08l-.03-2.01H14V6.94l5 5Z"/>' };
 </script>
 
 <footer class="contact-footer">
@@ -17,7 +18,7 @@
 
 		<div class="contact-actions">
 			<a class="cta-button" href={`mailto:${email}`}>
-				<Icon icon="mdi:arrow-right-thin" />
+				<Icon icon={arrowIcon} />
 				Get in Touch
 			</a>
 			<a
@@ -53,9 +54,9 @@
 		overflow: hidden;
 		background: var(--color-bg);
 		color: var(--color-main);
-		margin-top: 10rem;
-		gap: 10.5rem;
-		padding: 0 10rem;
+		margin-top: clamp(4rem, 10vw, 10rem);
+		gap: clamp(3rem, 10vw, 10.5rem);
+		padding: 0 clamp(1.25rem, 10vw, 10rem);
 	}
 
 	.contact-intro {
@@ -169,7 +170,9 @@
 
 	@media (max-width: 767px) {
 		.contact-footer {
-			grid-template-rows: minmax(27rem, 1fr) auto minmax(7rem, 15vh);
+			margin-top: 4rem;
+			gap: 3rem;
+			padding-inline: 0;
 		}
 
 		.contact-intro {
@@ -191,6 +194,19 @@
 		.footer-bar p {
 			width: 100%;
 			text-align: left;
+		}
+	}
+
+	@media (pointer: coarse) {
+		.freelance-link,
+		.footer-bar nav a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 2.75rem;
+		}
+
+		.footer-bar nav a {
+			padding-inline: 0.35rem;
 		}
 	}
 </style>

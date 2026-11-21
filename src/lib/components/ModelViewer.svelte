@@ -76,8 +76,24 @@
 		controls.enablePan = false;
 		controls.enableZoom = false;
 		controls.rotateSpeed = 0.8;
+		renderer.domElement.style.touchAction = "pan-y";
 
 		let loadedModel: THREE.Object3D | undefined;
+		let radius = 0;
+		let dirty = true;
+
+		const fitCamera = () => {
+			if (radius === 0) return;
+			const vertical = three.MathUtils.degToRad(camera.fov);
+			const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * camera.aspect);
+			const distance = (radius / Math.sin(Math.min(vertical, horizontal) / 2)) * 1.15;
+			camera.position.setLength(distance);
+			camera.near = Math.max(radius / 100, 0.01);
+			camera.far = distance + radius * 10;
+			camera.updateProjectionMatrix();
+			controls.update();
+			dirty = true;
+		};
 
 		const resizeObserver = new ResizeObserver(([entry]) => {
 			const { width, height } = entry.contentRect;
@@ -86,6 +102,8 @@
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
 			renderer.setSize(width, height, false);
+			fitCamera();
+			dirty = true;
 		});
 		resizeObserver.observe(viewport);
 
@@ -118,14 +136,10 @@
 				scene.add(modelGroup);
 				loadedModel = modelGroup;
 
-				const radius = (size.length() * scale) / 2;
-				const cameraDistance = radius / Math.sin(three.MathUtils.degToRad(camera.fov / 2)) * 1.15;
-				camera.position.set(0, radius * 0.15, cameraDistance);
-				camera.near = Math.max(radius / 100, 0.01);
-				camera.far = cameraDistance + radius * 10;
-				camera.updateProjectionMatrix();
+				radius = (size.length() * scale) / 2;
+				camera.position.set(0, 0.04, 1);
 				controls.target.set(0, 0, 0);
-				controls.update();
+				fitCamera();
 				updateStatus("ready");
 			},
 			undefined,
@@ -137,8 +151,10 @@
 		);
 
 		renderer.setAnimationLoop(() => {
-			controls.update();
-			renderer.render(scene, camera);
+			if (controls.update() || dirty) {
+				renderer.render(scene, camera);
+				dirty = false;
+			}
 		});
 
 		return () => {
@@ -226,7 +242,7 @@
 			radial-gradient(ellipse at 50% 40%, rgba(116, 132, 156, 0.28), transparent 68%),
 			#111827;
 		cursor: grab;
-		touch-action: none;
+		touch-action: pan-y;
 	}
 
 	.model-viewer:active {

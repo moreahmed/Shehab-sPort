@@ -97,6 +97,9 @@
     });
   });
 
+  let inView = true;
+  let wakeLoop: (() => void) | undefined;
+
   // Animation loop: inertia + autoplay
   onMount(() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -104,6 +107,8 @@
     let last = performance.now();
 
     const tick = (now: number) => {
+      raf = 0;
+      if (!inView) return;
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       if (!dragging) {
@@ -123,7 +128,16 @@
     };
 
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    wakeLoop = () => {
+      if (raf || !inView) return;
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
+
+    return () => {
+      cancelAnimationFrame(raf);
+      wakeLoop = undefined;
+    };
   });
 
   function onpointerdown(e: PointerEvent) {
@@ -197,6 +211,12 @@
       velocity += (e.deltaY + e.deltaX) * 0.004;
     };
 
+    const visibility = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (inView) wakeLoop?.();
+    });
+    visibility.observe(element);
+
     element.addEventListener('pointerdown', onpointerdown);
     element.addEventListener('pointermove', onpointermove);
     element.addEventListener('pointerup', onpointerup);
@@ -206,6 +226,7 @@
     if (wheel) element.addEventListener('wheel', onwheel, { passive: false });
 
     return () => {
+      visibility.disconnect();
       element.removeEventListener('pointerdown', onpointerdown);
       element.removeEventListener('pointermove', onpointermove);
       element.removeEventListener('pointerup', onpointerup);

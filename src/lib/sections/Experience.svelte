@@ -51,11 +51,11 @@
 	id="experience"
 	{@attach setSectionRef}
 	class="relative bg-bg"
-	style:height={`${Math.max(experiences.length, 1) * 100}vh`}
+	style:height={`${Math.max(experiences.length, 1) * 100}svh`}
 >
-	<div class="sticky top-0 h-screen overflow-hidden">
+	<div class="sticky top-0 h-svh overflow-hidden">
 		{#if experiences.length > 0}
-			<div class="mx-auto grid h-full w-full max-w-7xl grid-cols-[minmax(0,1fr)_11rem] items-center gap-8 px-6 md:grid-cols-[minmax(0,1fr)_14rem] md:px-12 lg:px-16">
+			<div class="mx-auto grid h-full w-full max-w-7xl grid-cols-[minmax(0,1fr)_1.5rem] items-center gap-4 px-6 md:grid-cols-[minmax(0,1fr)_14rem] md:gap-8 md:px-12 lg:px-16">
 				<div class="relative min-w-0">
 					<p class="mb-4 font-body text-body-sm font-semibold uppercase tracking-[0.22em] text-primary">
 						Experience
@@ -146,7 +146,7 @@
 	.timeline {
 		position: relative;
 		align-self: stretch;
-		height: min(70vh, 620px);
+		height: min(70svh, 620px);
 		margin-block: auto;
 	}
 
@@ -223,7 +223,27 @@
 
 	@media (max-width: 767px) {
 		.timeline-date {
-			min-width: 5rem;
+			min-width: 0;
+			margin: 0;
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+			white-space: nowrap;
+		}
+
+		.timeline-point {
+			right: -21px;
+			width: 44px;
+			height: 44px;
+			justify-content: center;
+		}
+	}
+
+	@media (pointer: coarse) {
+		.timeline-point {
+			min-height: 2.75rem;
 		}
 	}
 </style>

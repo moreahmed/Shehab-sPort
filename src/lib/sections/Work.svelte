@@ -8,7 +8,7 @@
     let width = $state(0);
     let cardWidth = $derived(width < 480 ? 140 : width < 768 ? 180 : 220);
     let cardHeight = $derived(width < 480 ? 200 : width < 768 ? 250 : 300);
-    const ribbonImages = projects.map(({ preview, title }) => ({ src: preview, alt: title }));
+    const ribbonImages = projects.map(({ thumb, preview, title }) => ({ src: thumb ?? preview, alt: title }));
 
     const onResize = () => {
         width = window.innerWidth;
@@ -35,7 +35,7 @@
 
 </script>
 
-<section id="work" class="relative h-screen overflow-hidden">
+<section id="work" class="relative overflow-hidden">
     <h2 class="work-heading text-shadow-sm">My Work</h2>
     <div class="ribbon-stage">
         <Depthribbon
@@ -69,10 +69,10 @@
     }
 
     .ribbon-stage {
-        position: absolute;
+        position: relative;
         z-index: 0;
-        inset: 0;
         display: grid;
+        min-height: 100svh;
         place-items: center;
     }
 </style>
